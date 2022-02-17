@@ -25,11 +25,11 @@ mount_share() {
 
 	sudo apt install -y cifs-utils
 	sudo mkdir $mountTarget
-	echo 'username=${uservar}' | sudo tee -a /root/.smb_credentials
-	echo 'password=${passvar}' | sudo tee -a /root/.smb_credentials
+	echo "username=${uservar}" | sudo tee -a /root/.smb_credentials
+	echo "password=${passvar}" | sudo tee -a /root/.smb_credentials
 	sudo chmod 400 /root/.smb_credentials
 	sudo mount -t cifs -o rw,vers=3.0,credentials=/root/.smb_credentials $mountSource $mountTarget
-	echo '${mountSource} ${mountTarget} cifs rw,vers=3.0,credentials=/root/.smb_credentials' | sudo tee -a /etc/fstab
+	echo "${mountSource} ${mountTarget} cifs rw,vers=3.0,credentials=/root/.smb_credentials" | sudo tee -a /etc/fstab
 }
 
 
@@ -74,8 +74,6 @@ install_ffmpeg_makemkv() {
 	sudo make install
 	
 	rm -rf /tmp/ffmpeg
-	
-	/usr/bin/makemkvcon
 }
 
 
@@ -85,19 +83,19 @@ autorip_setup() {
 	echo '##########################'
 	echo
 
-	/usr/bin/makemkvcon
-
 	echo
 	read -p 'MakeMKV Key: ' licenseKey
 	echo
 
-	licenseHolder="000000000000"
-	sed -i "s/$licenseHolder/$licenseKey/" "$scriptroot/settings.cfg"
+	#licenseHolder="000000000000"
+	#sed -i "s/$licenseHolder/$licenseKey/" "$scriptroot/settings.cfg"
+	
+	/usr/bin/makemkvcon reg $licenseKey
 
 	presetDir="~/Videos"
 	sed -i "s/$presetDir/$mountTarget/" "$scriptroot/settings.cfg"
 
-	echo 'apt_Key = "Holder"' | sudo tee -a $userhome/.MakeMKV/update.conf
+	#echo 'apt_Key = "Holder"' | sudo tee -a $userhome/.MakeMKV/update.conf
 
 	chmod +x $scriptroot/wrapper.sh
 }
@@ -108,14 +106,14 @@ daemon_service() {
 	echo '##  Creating Autorip Daemon  ##'
 	echo '###############################'
 	echo
-	echo '[Unit]' | sudo tee -a /lib/systemd/system/autorip.service
-	echo 'Description=MakeMKV Autorip Script' | sudo tee -a /lib/systemd/system/autorip.service
-	echo '' | sudo tee -a /lib/systemd/system/autorip.service
-	echo '[Service]' | sudo tee -a /lib/systemd/system/autorip.service
-	echo 'ExecStart=$userhome/autorip/wrapper.sh' | sudo tee -a /lib/systemd/system/autorip.service
-	echo '' | sudo tee -a /lib/systemd/system/autorip.service
-	echo '[Install]' | sudo tee -a /lib/systemd/system/autorip.service
-	echo 'WantedBy=multi-user.target' | sudo tee -a /lib/systemd/system/autorip.service
+	echo "[Unit]" | sudo tee -a /lib/systemd/system/autorip.service
+	echo "Description=MakeMKV Autorip Script" | sudo tee -a /lib/systemd/system/autorip.service
+	echo "" | sudo tee -a /lib/systemd/system/autorip.service
+	echo "[Service]" | sudo tee -a /lib/systemd/system/autorip.service
+	echo "ExecStart=$userhome/autorip/wrapper.sh" | sudo tee -a /lib/systemd/system/autorip.service
+	echo "" | sudo tee -a /lib/systemd/system/autorip.service
+	echo "[Install]" | sudo tee -a /lib/systemd/system/autorip.service
+	echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/autorip.service
 
 	sudo systemctl daemon-reload
 	sudo systemctl enable autorip.service
