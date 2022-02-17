@@ -11,6 +11,7 @@ sudo apt upgrade -y
 
 
 mount_share() {
+	echo
 	echo '############################'
 	echo '##  Mounting Share Drive  ##'
 	echo '############################'
@@ -34,6 +35,7 @@ mount_share() {
 
 
 install_ffmpeg_makemkv() {
+	echo
 	echo '############################################'
 	echo '##  Installing Libraries and Build Tools  ##'
 	echo '############################################'
@@ -41,6 +43,7 @@ install_ffmpeg_makemkv() {
 	sudo apt install -y build-essential pkg-config libc6-dev libssl-dev libexpat1-dev libavcodec-dev libgl1-mesa-dev qtbase5-dev zlib1g-dev nasm libfdk-aac-dev sed wget curl tar setcd
 	
 	
+	echo
 	echo '#########################'
 	echo '##  Installing FFMPEG  ##'
 	echo '#########################'
@@ -53,6 +56,7 @@ install_ffmpeg_makemkv() {
 	./configure --prefix=/tmp/ffmpeg --enable-static --disable-shared --enable-pic --enable-libfdk-aac
 	make install
 	
+	echo
 	echo '##########################'
 	echo '##  Installing MakeMKV  ##'
 	echo '##########################'
@@ -78,6 +82,7 @@ install_ffmpeg_makemkv() {
 
 
 autorip_setup() {
+	echo
 	echo '##########################'
 	echo '##  Setting Up Autorip  ##'
 	echo '##########################'
@@ -102,6 +107,7 @@ autorip_setup() {
 
 
 daemon_service() {
+	echo
 	echo '###############################'
 	echo '##  Creating Autorip Daemon  ##'
 	echo '###############################'
@@ -110,7 +116,8 @@ daemon_service() {
 	echo "Description=MakeMKV Autorip Script" | sudo tee -a /lib/systemd/system/autorip.service
 	echo "" | sudo tee -a /lib/systemd/system/autorip.service
 	echo "[Service]" | sudo tee -a /lib/systemd/system/autorip.service
-	echo "ExecStart=$userhome/autorip/wrapper.sh" | sudo tee -a /lib/systemd/system/autorip.service
+	echo "User=$USER" | sudo tee -a /lib/systemd/system/autorip.service
+	echo "ExecStart=sudo $userhome/autorip/wrapper.sh" | sudo tee -a /lib/systemd/system/autorip.service
 	echo "" | sudo tee -a /lib/systemd/system/autorip.service
 	echo "[Install]" | sudo tee -a /lib/systemd/system/autorip.service
 	echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/autorip.service
