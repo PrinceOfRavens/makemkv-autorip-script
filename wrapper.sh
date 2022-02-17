@@ -9,9 +9,9 @@ userhome=$(eval echo ~"${SUDO_USER:-$USER}")
 
 
 # Update license key from settings.cfg to ~/.MakeMKV/settings.conf MANUALLY
-newlicense="$(awk '/^license/{print $1}' "$scriptroot/settings.cfg" | cut -d '=' -f2)"
-oldlicense="$(awk '/^app_Key/{print $3}' "$userhome/.MakeMKV/settings.conf" | cut -d '=' -f2 | xargs)"
-sed -i "s/$oldlicense/$newlicense/" "$userhome/.MakeMKV/settings.conf"
+# newlicense="$(awk '/^license/{print $1}' "$scriptroot/settings.cfg" | cut -d '=' -f2)"
+# oldlicense="$(awk '/^app_Key/{print $3}' "$userhome/.MakeMKV/settings.conf" | cut -d '=' -f2 | xargs)"
+# sed -i "s/$oldlicense/$newlicense/" "$userhome/.MakeMKV/settings.conf"
 
 # Update license key automatically from website to ~/.MakeMKV/settings.conf AUTOMATICALLY
 #
