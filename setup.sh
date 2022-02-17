@@ -93,8 +93,8 @@ daemon_service() {
 }
 
 
-mount_share()
-install_ffmpeg_makemkv()
+mount_share
+install_ffmpeg_makemkv
 
 /usr/bin/makemkvcon
 
@@ -112,4 +112,4 @@ echo 'apt_Key = "Holder"' | sudo tee -a $userhome/.MakeMKV/update.conf
 
 chmod +x $scriptroot/wrapper.sh
 
-daemon_service()
+daemon_service
