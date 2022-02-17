@@ -8,16 +8,16 @@ scriptroot=$(dirname "$(realpath "$0")")
 userhome=$(eval echo ~"${SUDO_USER:-$USER}")
 
 
-# Update license key from settings.cfg to ~/.MakeMKV/settings.conf MANUALLY
+# Update license key from settings.cfg to ~/.MakeMKV/update.conf MANUALLY
 newlicense="$(awk '/^license/{print $1}' "$scriptroot/settings.cfg" | cut -d '=' -f2)"
-oldlicense="$(awk '/^app_Key/{print $3}' "$userhome/.MakeMKV/settings.conf" | cut -d '=' -f2 | xargs)"
-sed -i "s/$oldlicense/$newlicense/" "$userhome/.MakeMKV/settings.conf"
+oldlicense="$(awk '/^app_Key/{print $3}' "$userhome/.MakeMKV/update.conf" | cut -d '=' -f2 | xargs)"
+sed -i "s/$oldlicense/$newlicense/" "$userhome/.MakeMKV/update.conf"
 
-# Update license key automatically from website to ~/.MakeMKV/settings.conf AUTOMATICALLY
+# Update license key automatically from website to ~/.MakeMKV/update.conf AUTOMATICALLY
 #
 # newlicense="$(curl -sL https://www.makemkv.com/forum/viewtopic.php?t=1053 | grep -o -P '(?<=\<code\>).*(?=\<\/code\>)')"
-# oldlicense="$(awk '/^app_Key/{print $3}' "$userhome/.MakeMKV/settings.conf" | cut -d '=' -f2 | xargs)"
-# sed -i "s/$oldlicense/$newlicense/" "$userhome/.MakeMKV/settings.conf"
+# oldlicense="$(awk '/^app_Key/{print $3}' "$userhome/.MakeMKV/update.conf" | cut -d '=' -f2 | xargs)"
+# sed -i "s/$oldlicense/$newlicense/" "$userhome/.MakeMKV/update.conf"
 
 # Initial search for drives
 mapfile -t drives < <(ls /dev/sr*)
