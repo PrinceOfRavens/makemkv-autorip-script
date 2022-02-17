@@ -11,9 +11,9 @@ sudo apt upgrade -y
 
 
 mount_share() {
-	echo ############################
-	echo ##  Mounting Share Drive  ##
-	echo ############################
+	echo '############################'
+	echo '##  Mounting Share Drive  ##'
+	echo '############################'
 	echo
 	echo Please enter your mount information
 	echo
@@ -34,16 +34,16 @@ mount_share() {
 
 
 install_ffmpeg_makemkv() {
-	echo ############################################
-	echo ##  Installing Libraries and Build Tools  ##
-	echo ############################################
+	echo '############################################'
+	echo '##  Installing Libraries and Build Tools  ##'
+	echo '############################################'
 	echo
 	sudo apt install -y build-essential pkg-config libc6-dev libssl-dev libexpat1-dev libavcodec-dev libgl1-mesa-dev qtbase5-dev zlib1g-dev nasm libfdk-aac-dev sed wget curl tar setcd
 	
 	
-	echo #########################
-	echo ##  Installing FFMPEG  ##
-	echo #########################
+	echo '#########################'
+	echo '##  Installing FFMPEG  ##'
+	echo '#########################'
 	echo
 	mkdir $userhome/ffmpeg
 	cd $userhome/ffmpeg
@@ -53,9 +53,9 @@ install_ffmpeg_makemkv() {
 	./configure --prefix=/tmp/ffmpeg --enable-static --disable-shared --enable-pic --enable-libfdk-aac
 	make install
 	
-	echo ##########################
-	echo ##  Installing MakeMKV  ##
-	echo ##########################
+	echo '##########################'
+	echo '##  Installing MakeMKV  ##'
+	echo '##########################'
 	echo
 	mkdir $userhome/makemkv
 	cd $userhome/makemkv
@@ -74,10 +74,40 @@ install_ffmpeg_makemkv() {
 	sudo make install
 	
 	rm -rf /tmp/ffmpeg
+	
+	/usr/bin/makemkvcon
+}
+
+
+autorip_setup() {
+	echo '##########################'
+	echo '##  Setting Up Autorip  ##'
+	echo '##########################'
+	echo
+
+	/usr/bin/makemkvcon
+
+	echo
+	read -p 'MakeMKV Key: ' licenseKey
+	echo
+
+	licenseHolder="000000000000"
+	sed -i "s/$licenseHolder/$licenseKey/" "$scriptroot/settings.cfg"
+
+	presetDir="~/Videos"
+	sed -i "s/$presetDir/$mountTarget/" "$scriptroot/settings.cfg"
+
+	echo 'apt_Key = "Holder"' | sudo tee -a $userhome/.MakeMKV/update.conf
+
+	chmod +x $scriptroot/wrapper.sh
 }
 
 
 daemon_service() {
+	echo '###############################'
+	echo '##  Creating Autorip Daemon  ##'
+	echo '###############################'
+	echo
 	echo '[Unit]' | sudo tee -a /lib/systemd/system/autorip.service
 	echo 'Description=MakeMKV Autorip Script' | sudo tee -a /lib/systemd/system/autorip.service
 	echo '' | sudo tee -a /lib/systemd/system/autorip.service
@@ -95,21 +125,5 @@ daemon_service() {
 
 mount_share
 install_ffmpeg_makemkv
-
-/usr/bin/makemkvcon
-
-echo
-read -p 'MakeMKV Key: ' licenseKey
-echo
-
-licenseHolder="000000000000"
-sed -i "s/$licenseHolder/$licenseKey/" "$scriptroot/settings.cfg"
-
-presetDir="~/Videos"
-sed -i "s/$presetDir/$mountTarget/" "$scriptroot/settings.cfg"
-
-echo 'apt_Key = "Holder"' | sudo tee -a $userhome/.MakeMKV/update.conf
-
-chmod +x $scriptroot/wrapper.sh
-
+autorip_setup
 daemon_service
