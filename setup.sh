@@ -135,4 +135,4 @@ daemon_service() {
 mount_share
 install_ffmpeg_makemkv
 autorip_setup
-daemon_service
+#daemon_service
