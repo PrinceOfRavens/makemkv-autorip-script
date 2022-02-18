@@ -6,8 +6,11 @@ userhome=$(eval echo ~"${SUDO_USER:-$USER}")
 mountTarget="~/Videos"
 
 
-sudo apt update
-sudo apt upgrade -y
+read -sp 'Please enter sudo password: ' secretPass
+
+
+echo "$secretPass" | sudo -S apt update
+echo "$secretPass" | sudo -S apt upgrade -y
 
 
 mount_share() {
@@ -24,12 +27,12 @@ mount_share() {
 	read -sp 'Mount Password: ' passvar
 	echo
 
-	sudo apt install -y cifs-utils
-	sudo mkdir $mountTarget
+	echo "$secretPass" | sudo -S apt install -y cifs-utils
+	echo "$secretPass" | sudo -S mkdir $mountTarget
 	echo "username=${uservar}" | sudo tee -a /root/.smb_credentials
 	echo "password=${passvar}" | sudo tee -a /root/.smb_credentials
-	sudo chmod 400 /root/.smb_credentials
-	sudo mount -t cifs -o rw,vers=3.0,credentials=/root/.smb_credentials $mountSource $mountTarget
+	echo "$secretPass" | sudo -S chmod 400 /root/.smb_credentials
+	echo "$secretPass" | sudo -S mount -t cifs -o rw,vers=3.0,credentials=/root/.smb_credentials $mountSource $mountTarget
 	echo "${mountSource} ${mountTarget} cifs rw,vers=3.0,credentials=/root/.smb_credentials" | sudo tee -a /etc/fstab
 }
 
@@ -40,7 +43,7 @@ install_ffmpeg_makemkv() {
 	echo '##  Installing Libraries and Build Tools  ##'
 	echo '############################################'
 	echo
-	sudo apt install -y build-essential pkg-config libc6-dev libssl-dev libexpat1-dev libavcodec-dev libgl1-mesa-dev qtbase5-dev zlib1g-dev nasm libfdk-aac-dev sed wget curl tar setcd
+	echo "$secretPass" | sudo -S apt install -y build-essential pkg-config libc6-dev libssl-dev libexpat1-dev libavcodec-dev libgl1-mesa-dev qtbase5-dev zlib1g-dev nasm libfdk-aac-dev sed wget curl tar setcd
 	
 	
 	echo
@@ -68,14 +71,14 @@ install_ffmpeg_makemkv() {
 	cd makemkv-oss-1.16.5
 	PKG_CONFIG_PATH=/tmp/ffmpeg/lib/pkgconfig ./configure
 	make
-	sudo make install
+	echo "$secretPass" | sudo -S make install
 	
 	cd $userhome/makemkv
 	wget https://www.makemkv.com/download/makemkv-bin-1.16.5.tar.gz
 	tar -xvzf makemkv-bin-1.16.5.tar.gz
 	cd makemkv-bin-1.16.5
 	make
-	sudo make install
+	echo "$secretPass" | sudo -S make install
 	
 	rm -rf /tmp/ffmpeg
 }
@@ -112,19 +115,20 @@ daemon_service() {
 	echo '##  Creating Autorip Daemon  ##'
 	echo '###############################'
 	echo
+	
 	echo "[Unit]" | sudo tee -a /lib/systemd/system/autorip.service
 	echo "Description=MakeMKV Autorip Script" | sudo tee -a /lib/systemd/system/autorip.service
 	echo "" | sudo tee -a /lib/systemd/system/autorip.service
 	echo "[Service]" | sudo tee -a /lib/systemd/system/autorip.service
 	echo "User=$USER" | sudo tee -a /lib/systemd/system/autorip.service
-	echo "ExecStart=sudo $userhome/autorip/wrapper.sh" | sudo tee -a /lib/systemd/system/autorip.service
+	echo "ExecStart=echo \"$secretPass\" | sudo -S $userhome/autorip/wrapper.sh" | sudo tee -a /lib/systemd/system/autorip.service
 	echo "" | sudo tee -a /lib/systemd/system/autorip.service
 	echo "[Install]" | sudo tee -a /lib/systemd/system/autorip.service
 	echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/autorip.service
 
-	sudo systemctl daemon-reload
-	sudo systemctl enable autorip.service
-	sudo systemctl start autorip.service
+	echo "$secretPass" | sudo -S systemctl daemon-reload
+	echo "$secretPass" | sudo -S systemctl enable autorip.service
+	echo "$secretPass" | sudo -S systemctl start autorip.service
 }
 
 
