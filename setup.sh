@@ -81,6 +81,8 @@ install_ffmpeg_makemkv() {
 	echo "$secretPass" | sudo -S make install
 	
 	rm -rf /tmp/ffmpeg
+	
+	echo "$secretPass" | sudo -S apt install default-jre
 }
 
 
