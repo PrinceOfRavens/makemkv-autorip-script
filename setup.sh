@@ -13,6 +13,12 @@ echo "$secretPass" | sudo -S apt update
 echo "$secretPass" | sudo -S apt upgrade -y
 
 
+
+prerequisites() {
+	echo "$secretPass" | sudo -S 
+}
+
+
 mount_share() {
 	echo
 	echo '############################'

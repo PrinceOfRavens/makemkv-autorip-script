@@ -1,33 +1,64 @@
 #!/bin/bash
 
+TMP_PATH='/tmp/install'
+
+
+
+if [ "$USER" != root ] && [ "$SUDO_USER" != root ]; then
+	echo "This script needs to be executed with sudo!"
+	exit 1
+fi
+
+
+if [-d $TMP_PATH]; then
+    rm -rf $TMP_PATH
+fi
+
+mkdir $TMP_PATH
+
+
+
+
+echo
+echo '#########################'
+echo '##  Installing FFMPEG  ##'
+echo '#########################'
+echo
+
+mkdir $TMP_PATH/ffmpeg
+cd $TMP_PATH/ffmpeg
+wget https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+tar -xvjf ffmpeg-snapshot.tar.bz2
+cd ffmpeg
+./configure --prefix=/tmp/ffmpeg --enable-static --disable-shared --enable-pic --enable-libfdk-aac
+make install
+
+
+
 
 latestVersion=$(curl "https://forum.makemkv.com/forum/viewtopic.php?f=3&t=224" -s | xmllint --html --nowarning --xpath "//title/text()" - 2>/dev/null | awk '{print $2}')
-	
+
 echo
 echo '################################'
 echo "##  Installing MakeMKV ${latestVersion}  ##"
 echo '################################'
 echo
 
-latestVersion=$(curl "https://forum.makemkv.com/forum/viewtopic.php?f=3&t=224" -s | xmllint --html --nowarning --xpath "//title/text()" - 2>/dev/null | awk '{print $2}')
-
-rm -f $userhome/makemkv
-mkdir $userhome/makemkv
-cd $userhome/makemkv
-wget https://www.makemkv.com/download/makemkv-oss-1.16.5.tar.gz
-tar -xvzf makemkv-oss-1.16.5.tar.gz
-cd makemkv-oss-1.16.5
+mkdir $TMP_PATH/makemkv
+cd $TMP_PATH/makemkv
+wget https://www.makemkv.com/download/makemkv-oss-${latestVersion}.tar.gz
+tar -xvzf makemkv-oss-${latestVersion}.tar.gz
+cd makemkv-oss-${latestVersion}
 PKG_CONFIG_PATH=/tmp/ffmpeg/lib/pkgconfig ./configure
 make
-echo "$secretPass" | sudo -S make install
+make install
 	
-cd $userhome/makemkv
-wget https://www.makemkv.com/download/makemkv-bin-1.16.5.tar.gz
-tar -xvzf makemkv-bin-1.16.5.tar.gz
-cd makemkv-bin-1.16.5
+cd $TMP_PATH/makemkv
+wget https://www.makemkv.com/download/makemkv-bin-${latestVersion}.tar.gz
+tar -xvzf makemkv-bin-${latestVersion}.tar.gz
+cd makemkv-bin-${latestVersion}
 make
-echo "$secretPass" | sudo -S make install
+make install
 	
 rm -rf /tmp/ffmpeg
-	
-echo "$secretPass" | sudo -S apt install default-jre
+rm -rf $TMP_PATH
