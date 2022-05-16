@@ -3,6 +3,7 @@
 
 # Defining variables for later use
 SCRIPTROOT="$(dirname """$(realpath "$0")""")"
+LOGROOT="/tmp/autorip"
 LICENSEKEY="$(awk '/^license/{print $1}' "$SCRIPTROOT/settings.cfg" | cut -d '=' -f2)"
 CACHE="$(awk '/^cache/{print $1}' "$SCRIPTROOT/settings.cfg" | cut -d '=' -f2)"
 DEBUG="$(awk '/^debug/{print $1}' "$SCRIPTROOT/settings.cfg" | cut -d '=' -f2)"
@@ -20,11 +21,11 @@ else
 	echo "[ERROR]: The output directory specified in settings.conf is invalid!"
 	exit 1
 fi
-if [ -d "$SCRIPTROOT/logs" ]; then
+if [ -d "$LOGROOT/logs" ]; then
 	:
 else
-	echo "[ERROR]: Log directory under $SCRIPTROOT/logs is missing! Trying to create it."
-	mkdir "$SCRIPTROOT/logs"
+	echo "[ERROR]: Log directory under $LOGROOT/logs is missing! Trying to create it."
+	mkdir -p "$LOGROOT/logs"
 	exit 1
 fi
 
@@ -64,11 +65,11 @@ ripper() {
 
 
 	mkdir "$OUTPUTDIR/$DISKTITLE"
-	makemkvcon mkv --messages="${SCRIPTROOT}/logs/${NOWDATE}_$DISKTITLERAW.log" --noscan --robot $ARGS disc:"$SOURCEMMKVDRIVE" all "${OUTPUTDIR}/${DISKTITLE}"
+	makemkvcon mkv --messages="${LOGROOT}/logs/${NOWDATE}_$DISKTITLERAW.log" --noscan --robot $ARGS disc:"$SOURCEMMKVDRIVE" all "${OUTPUTDIR}/${DISKTITLE}"
 	if [ $? -le 1 ]; then
 		echo "[INFO] $drive: Ripping finished (exit code $?), ejecting"
 	else
-		echo "[ERROR] $drive: RIPPING FAILED (exit code $?), ejecting. Please check the logs under ${SCRIPTROOT}/logs/${NOWDATE}_${DISKTITLERAW}.log"
+		echo "[ERROR] $drive: RIPPING FAILED (exit code $?), ejecting. Please check the logs under ${LOGROOT}/logs/${NOWDATE}_${DISKTITLERAW}.log"
 	fi
 	eject "$drive"
 }
