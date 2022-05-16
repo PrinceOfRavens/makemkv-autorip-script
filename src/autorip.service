@@ -1,0 +1,12 @@
+[Unit]
+Description=MakeMKV Autorip Script
+[Service]
+User=autorip
+WorkingDirectory=/usr/share/autorip
+ExecStart=/usr/share/autorip/autorip.sh
+Type=simple
+TimeoutStopSec=10
+Restart=on-failure
+RestartSec=5
+[Install]
+WantedBy=multi-user.target
