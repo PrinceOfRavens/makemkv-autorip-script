@@ -3,7 +3,7 @@
 
 latestVersion=""
 
-scriptroot=$(dirname "$(realpath "$0")")
+scriptroot="/usr/share/autorip"
 userhome=$(eval echo ~"${SUDO_USER:-$USER}")
 mountTarget="~/Videos"
 
@@ -40,7 +40,7 @@ mount_share() {
 
 
 install_ffmpeg_makemkv() {
-	echo "$secretPass" | sudo -S install-makemkv.sh
+	echo "$secretPass" | sudo -S install-makemkv
 #	echo
 #	echo '############################################'
 #	echo '##  Installing Libraries and Build Tools  ##'
@@ -110,17 +110,17 @@ autorip_setup() {
 	
 	#echo "$secretPass" | sudo -S /usr/bin/makemkvcon reg $licenseKey
 
+	echo "$secretPass" | sudo -S rm -f $scriptroot/*
+	echo "$secretPass" | sudo -S install -d $scriptroot
+	echo "$secretPass" | sudo -S install -m 755 -t $scriptroot src/autorip.sh
+	echo "$secretPass" | sudo -S install -m 755 -t $scriptroot src/install-makemkv.sh
+	echo "$secretPass" | sudo -S install -m 644 -t $scriptroot src/settings.cfg
+	echo "$secretPass" | sudo -S ln -s -f $scriptroot/autorip.sh /usr/bin/autorip
+	echo "$secretPass" | sudo -S ln -s -f $scriptroot/install-makemkv /usr/bin/install-makemkv
+
 	presetDir="~/Videos"
 	sed -i "s/$presetDir/$mountTarget/" "$scriptroot/settings.cfg"
 	sed -i "s/000000000000/$licenseKey/" "$scriptroot/settings.cfg"
-
-	echo "$secretPass" | sudo -S rm -f /usr/share/autorip/*
-	echo "$secretPass" | sudo -S install -d /usr/share/autorip
-	echo "$secretPass" | sudo -S install -m 755 -t /usr/share/autorip src/autorip.sh
-	echo "$secretPass" | sudo -S install -m 755 -t /usr/share/autorip src/install-makemkv.sh
-	echo "$secretPass" | sudo -S install -m 644 -t /usr/share/autorip src/settings.cfg
-	echo "$secretPass" | sudo -S ln -s -f /usr/share/autorip/autorip.sh /usr/bin/autorip
-	echo "$secretPass" | sudo -S ln -s -f /usr/share/autorip/install-makemkv /usr/bin/install-makemkv
 }
 
 #!#
