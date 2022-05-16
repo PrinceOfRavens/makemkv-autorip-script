@@ -30,7 +30,8 @@ mount_share() {
 	echo
 
 	echo "$secretPass" | sudo -S apt install -y cifs-utils
-	echo "$secretPass" | sudo -S mkdir $mountTarget
+	#echo "$secretPass" | sudo -S mkdir $mountTarget
+	echo "$secretPass" | sudo -S install -m 775 -g cdrom -d $mountTarget
 	echo "username=${uservar}" | sudo tee -a /root/.smb_credentials
 	echo "password=${passvar}" | sudo tee -a /root/.smb_credentials
 	echo "$secretPass" | sudo -S chmod 400 /root/.smb_credentials
