@@ -119,8 +119,8 @@ autorip_setup() {
 	echo "$secretPass" | sudo -S ln -s -f $scriptroot/install-makemkv /usr/bin/install-makemkv
 
 	presetDir="~/Videos"
-	sed -i "s/$presetDir/$mountTarget/" "$scriptroot/settings.cfg"
-	sed -i "s/000000000000/$licenseKey/" "$scriptroot/settings.cfg"
+	echo "$secretPass" | sudo -S sed -i "s/$presetDir/$mountTarget/" "$scriptroot/settings.cfg"
+	echo "$secretPass" | sudo -S sed -i "s/000000000000/$licenseKey/" "$scriptroot/settings.cfg"
 }
 
 #!#
