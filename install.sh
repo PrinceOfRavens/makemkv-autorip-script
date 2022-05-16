@@ -5,7 +5,7 @@ latestVersion=""
 
 scriptroot="/usr/share/autorip"
 userhome=$(eval echo ~"${SUDO_USER:-$USER}")
-mountTarget="~/Videos"
+mountTarget="/tmp/videos"
 
 
 read -sp 'Please enter sudo password: ' secretPass
@@ -118,11 +118,11 @@ autorip_setup() {
 	echo "$secretPass" | sudo -S ln -s -f $scriptroot/autorip.sh /usr/bin/autorip
 	echo "$secretPass" | sudo -S ln -s -f $scriptroot/install-makemkv.sh /usr/bin/install-makemkv
 
-	presetDir="~/Videos"
+	presetDir="PLACEHOLDER"
 
 	cp src/settings.cfg /tmp
-	sed -i "s/$presetDir/$mountTarget/" /tmp/settings.cfg
-	sed -i "s/000000000000/$licenseKey/" /tmp/settings.cfg
+	sed -i "s|$presetDir|$mountTarget|" /tmp/settings.cfg
+	sed -i "s|000000000000|$licenseKey|" /tmp/settings.cfg
 	echo "$secretPass" | sudo -S install -m 644 -t $scriptroot /tmp/settings.cfg
 }
 
