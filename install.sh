@@ -145,6 +145,7 @@ daemon_service() {
 	#echo "WantedBy=multi-user.target" | sudo tee -a /lib/systemd/system/autorip.service
 
 	echo "$secretPass" | sudo -S useradd -r -m autorip
+	echo "$secretPass" | sudo -S adduser autorip cdrom
 	echo "$secretPass" | sudo -S install -m 755 -t /etc/systemd/system src/autorip.service
 
 	echo "$secretPass" | sudo -S systemctl daemon-reload
