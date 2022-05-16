@@ -30,13 +30,12 @@ mount_share() {
 	echo
 
 	echo "$secretPass" | sudo -S apt install -y cifs-utils
-	#echo "$secretPass" | sudo -S mkdir $mountTarget
-	echo "$secretPass" | sudo -S install -m 775 -g cdrom -d $mountTarget
+	echo "$secretPass" | sudo -S mkdir $mountTarget
 	echo "username=${uservar}" | sudo tee -a /root/.smb_credentials
 	echo "password=${passvar}" | sudo tee -a /root/.smb_credentials
 	echo "$secretPass" | sudo -S chmod 400 /root/.smb_credentials
-	echo "$secretPass" | sudo -S mount -t cifs -o rw,vers=3.0,credentials=/root/.smb_credentials $mountSource $mountTarget
-	echo "${mountSource} ${mountTarget} cifs rw,vers=3.0,credentials=/root/.smb_credentials" | sudo tee -a /etc/fstab
+	echo "$secretPass" | sudo -S mount -t cifs -o rw,dir_mode=0777,file_mode=0777,vers=3.0,credentials=/root/.smb_credentials $mountSource $mountTarget
+	echo "${mountSource} ${mountTarget} cifs rw,dir_mode=0777,file_mode=0777,vers=3.0,credentials=/root/.smb_credentials" | sudo tee -a /etc/fstab
 }
 
 
